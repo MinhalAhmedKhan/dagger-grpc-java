@@ -1,0 +1,50 @@
+plugins {
+    id 'java'
+    id "com.google.protobuf" version "0.9.5"
+}
+
+group 'com.github.minhal.grpc'
+version '1.0-SNAPSHOT'
+
+repositories {
+    mavenCentral()
+}
+
+protobuf {
+    protoc {
+        artifact = "com.google.protobuf:protoc:3.25.5"
+    }
+    plugins {
+        grpc {
+            artifact = 'io.grpc:protoc-gen-grpc-java:1.71.0'
+        }
+    }
+    generateProtoTasks {
+        all()*.plugins {
+            grpc {}
+        }
+    }
+}
+
+dependencies {
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.1'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.1'
+    runtimeOnly 'io.grpc:grpc-netty-shaded:1.71.0'
+    implementation 'io.grpc:grpc-protobuf:1.71.0'
+    implementation 'io.grpc:grpc-stub:1.71.0'
+    compileOnly 'org.apache.tomcat:annotations-api:6.0.53'
+    implementation 'com.google.dagger:dagger:2.55'
+    annotationProcessor 'com.google.dagger:dagger-compiler:2.55'
+}
+
+task runGreetingClient(type: JavaExec) {
+    group = 'application' // optional, but helps organize tasks
+    description = 'Runs the GreetingClient main class.'
+    classpath = sourceSets.main.runtimeClasspath
+    main = 'com.github.minhal.grpc.gretting.client.GreetingClient'
+}
+
+
+test {
+    useJUnitPlatform()
+}
